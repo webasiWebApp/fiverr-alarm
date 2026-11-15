@@ -1,0 +1,36 @@
+name: ios-unsigned
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install JS deps
+        working-directory: app
+        run: npm ci
+      - name: Prebuild iOS project
+        working-directory: app
+        run: npx expo prebuild --platform ios --clean
+      - name: Install pods
+        working-directory: app/ios
+        run: pod install
+      - name: Build unsigned
+        working-directory: app/ios
+        run: |
+          xcodebuild -workspace FiverrAlarm.xcworkspace -scheme FiverrAlarm \
+            -configuration Release -sdk iphoneos -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+      - name: Package ipa
+        working-directory: app/ios
+        run: |
+          mkdir Payload
+          cp -r build/Build/Products/Release-iphoneos/FiverrAlarm.app Payload/
+          zip -r FiverrAlarm.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FiverrAlarm.ipa
+          path: app/ios/FiverrAlarm.ipa
