@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "Fiverr Alarm",
+    "slug": "fiverr-alarm",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.webasi.fiverralarm",
+      "infoPlist": {
+        "UIBackgroundModes": ["audio"],
+        "NSLocalNetworkUsageDescription": "Connects to your laptop to receive Fiverr alarms.",
+        "NSAppTransportSecurity": { "NSAllowsLocalNetworking": true }
+      }
+    },
+    "plugins": ["expo-audio", "expo-notifications"]
+  }
+}
